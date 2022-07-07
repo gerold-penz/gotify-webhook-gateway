@@ -10,5 +10,5 @@ services:
 
     restart: unless-stopped
 
-    environment:
-      NPM_CONFIG_LOGLEVEL: "verbose"
+#    environment:
+#      NPM_CONFIG_LOGLEVEL: "verbose"

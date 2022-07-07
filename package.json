@@ -1,14 +1,14 @@
 {
   "name": "gotify-webhooks",
   "type": "module",
-  "version": "1.0.0",
+  "version": "1.2.0",
   "description": "Sends HTTP requests when Gotify server receives messages.",
   "main": "dist/index.js",
   "scripts": {
-    "dev": "NPM_CONFIG_LOGLEVEL=\"verbose\"; concurrently -k \"npm run watch\"  \"npx nodemon ./dist/index.js\"",
-    "watch": "npx tsc --build --watch --verbose",
-    "build": "npx tsc --build --verbose",
     "test": "echo \"Error: no test specified\" && exit 1",
+    "watch": "npx tsc --watch",
+    "build": "npx tsc",
+    "dev": "concurrently -k \"npm run watch\"  \"npx nodemon\"",
     "start": "node ./dist/index.js"
   },
   "repository": {
@@ -28,12 +28,12 @@
   },
   "homepage": "https://github.com/gerold-penz/gotify-webhooks#readme",
   "dependencies": {
+    "typescript": "^4.7.4",
     "ws": "^8.8.0",
-    "typescript": "^4.7.4"
+    "@types/node": "^18.0.3",
+    "@types/ws": "^8.5.3"
   },
   "devDependencies": {
-    "@types/node": "^18.0.3",
-    "@types/ws": "^8.5.3",
     "concurrently": "^7.2.2",
     "nodemon": "^2.0.19"
   },

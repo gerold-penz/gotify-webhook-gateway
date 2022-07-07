@@ -25,7 +25,7 @@ class GotifyWebSocket extends WebSocket {
 
 
         this.on("open", () => {
-            console.log("WebSocket opened. xxx YYY")
+            console.log("WebSocket opened.")
         })
 
         this.on("message", (data) => {
