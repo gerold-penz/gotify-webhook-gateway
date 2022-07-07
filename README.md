@@ -1,2 +1,4 @@
-# gotify-webhooks
-If the Gotify server receives a message, an HTTP request is sent to any URL.
+# Gotify Webhooks Server/Gateway
+
+Sends HTTP requests when Gotify server receives messages.
+

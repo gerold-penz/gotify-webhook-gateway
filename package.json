@@ -1,0 +1,29 @@
+{
+  "name": "gotify-webhooks",
+  "version": "1.0.0",
+  "description": "Sends HTTP requests when Gotify server receives messages.",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "echo \"BUILDING........\"",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gerold-penz/gotify-webhooks.git"
+  },
+  "keywords": [
+    "gotify",
+    "webhook",
+    "message",
+    "notification"
+  ],
+  "author": "Gerold Penz Softwaretechnik - <gerold@gp-softwaretechnik.at>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/gerold-penz/gotify-webhooks/issues"
+  },
+  "homepage": "https://github.com/gerold-penz/gotify-webhooks#readme",
+  "dependencies": {
+    "ws": "^8.8.0"
+  }
+}

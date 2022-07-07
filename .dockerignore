@@ -1,0 +1,7 @@
+/node_modules
+/dist
+.git
+.idea
+.gitignore
+docker-compose.yaml
+package-lock.json
