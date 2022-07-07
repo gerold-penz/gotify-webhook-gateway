@@ -1,7 +1,7 @@
 {
   "name": "gotify-webhooks",
   "type": "module",
-  "version": "1.2.0",
+  "version": "1.2.2",
   "description": "Sends HTTP requests when Gotify server receives messages.",
   "main": "dist/index.js",
   "scripts": {

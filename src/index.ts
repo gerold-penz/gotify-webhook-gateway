@@ -9,10 +9,9 @@ import {default as axios, AxiosRequestConfig} from "axios"
 async function getAppWebHooks() {
     const gotifyHttp = new GotifyHttp(settings.httpBaseUrl, settings.clientToken)
     const applicationsByName = await gotifyHttp.getApplicationsByName()
-    const webHooks = settings.getWebHooks()
     const appWebHooks = new Map<number, WebHook>()
 
-    for (const webHook of webHooks) {
+    for (const webHook of settings.webHooks) {
         if (!applicationsByName.has(webHook.appName)) {
             throw new Error(`App name '${webHook.appName}' not found.`)
         }
