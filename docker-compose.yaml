@@ -8,9 +8,40 @@ services:
       context: .
       dockerfile: Dockerfile
 
-    restart: unless-stopped
-
     environment:
       NPM_CONFIG_LOGLEVEL: "verbose"
-#      GOTIFY_WEBSERVICE_BASE_URL: ""
-#      GOTIFY_CLIENT_TOKEN: ""
+
+      GOTIFY_HOSTNAME: "gotify.example.com"
+      GOTIFY_HTTPS: "true"
+      GOTIFY_CLIENT_TOKEN: "<Client-Token>"
+      
+      #      APP_1_NAME: "Gotify App Name"
+      #      APP_1_WEBHOOK: "https://example.com/gotify-webhook"
+      #      APP_1_BASIC_AUTH_USERNAME: ""
+      #      APP_1_BASIC_AUTH_PASSWORD: ""
+      #
+      #      APP_2_NAME: ""
+      #      APP_2_WEBHOOK: ""
+      #      APP_2_BASIC_AUTH_USERNAME: ""
+      #      APP_2_BASIC_AUTH_PASSWORD: ""
+      #
+      #      APP_3_NAME: ""
+      #      APP_3_WEBHOOK: ""
+      #      APP_3_BASIC_AUTH_USERNAME: ""
+      #      APP_3_BASIC_AUTH_PASSWORD: ""
+      #
+      #      APP_4_NAME: ""
+      #      APP_4_WEBHOOK: ""
+      #      APP_4_BASIC_AUTH_USERNAME: ""
+      #      APP_4_BASIC_AUTH_PASSWORD: ""
+      #
+      #      APP_5_NAME: ""
+      #      APP_5_WEBHOOK: ""
+      #      APP_5_BASIC_AUTH_USERNAME: ""
+      #      APP_5_BASIC_AUTH_PASSWORD: ""
+      #
+      #      APP_6_NAME: ""
+      #      APP_6_WEBHOOK: ""
+      #      APP_6_BASIC_AUTH_USERNAME: ""
+      #      APP_6_BASIC_AUTH_PASSWORD: ""
+      
