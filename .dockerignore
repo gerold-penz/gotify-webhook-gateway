@@ -5,3 +5,4 @@
 .gitignore
 docker-compose.yaml
 package-lock.json
+.env

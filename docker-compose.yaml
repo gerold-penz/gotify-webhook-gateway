@@ -10,5 +10,7 @@ services:
 
     restart: unless-stopped
 
-#    environment:
-#      NPM_CONFIG_LOGLEVEL: "verbose"
+    environment:
+      NPM_CONFIG_LOGLEVEL: "verbose"
+#      GOTIFY_WEBSERVICE_BASE_URL: ""
+#      GOTIFY_CLIENT_TOKEN: ""
