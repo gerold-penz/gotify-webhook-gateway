@@ -12,5 +12,5 @@ RUN ["npm", "install"]
 RUN ["npm", "run", "build"]
 
 # Start
-CMD ["node", "dist/index.js"]
+CMD ["npm", "start"]
 
