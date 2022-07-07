@@ -1,12 +1,16 @@
 FROM node:18-alpine
 LABEL maintainer="Gerold Penz Softwaretechnik - <gerold@gp-softwaretechnik.at>"
 
-WORKDIR "/home/node/app"
-ENV NODE_ENV="development"
+# Environment
+WORKDIR "/app"
+ENV NODE_ENV="production"
+ENV NPM_CONFIG_LOGLEVEL="verbose"
 
-COPY [".", "/home/node/app"]
-RUN ["npm", "install", "--production"]
+# Install
+COPY [".", "/app"]
+RUN ["npm", "install"]
 RUN ["npm", "run", "build"]
 
+# Start
 CMD ["node", "dist/index.js"]
 

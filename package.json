@@ -25,5 +25,10 @@
   "homepage": "https://github.com/gerold-penz/gotify-webhooks#readme",
   "dependencies": {
     "ws": "^8.8.0"
+  },
+  "devDependencies": {
+    "@types/node": "^18.0.3",
+    "concurrently": "^7.2.2",
+    "nodemon": "^2.0.19"
   }
 }

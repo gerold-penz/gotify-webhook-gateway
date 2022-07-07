@@ -10,9 +10,5 @@ services:
 
     restart: unless-stopped
 
-    environment:
-      NODE_ENV: "production"
-      NPM_CONFIG_LOGLEVEL: "verbose"
-
-    expose:
-      - "8080"
+#    environment:
+#      XXX: "YYY"
