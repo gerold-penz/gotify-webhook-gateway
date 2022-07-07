@@ -1,21 +1,56 @@
-import {WebSocket} from 'ws'
+import {WebSocket} from "ws"
+import {env} from "process"
 
 
-const ws = new WebSocket('wss://gotify.gp-softwaretechnik.at/stream?token=CkAA8psxiIpB.EM')
+class GotifyWebSocket extends WebSocket {
 
-ws.on("open", () => {
-    console.log("WebSocket opened.")
-})
+    private baseUrl: string
+    private token: string
 
 
-ws.on("message", (data) => {
-    console.log("Message received: %s", data)
-})
+    constructor(baseUrl: string, token: string) {
 
-ws.on("close", () => {
-    console.log("WebSocket closed.")
-})
+        if (baseUrl.endsWith("/")) {
+            baseUrl.slice(0, -1)
+        }
 
-ws.on("error", (error) => {
-    console.error("WebSocket error: %s", error)
-})
+        super(`${baseUrl}/stream`, {
+            headers: {
+                "X-Gotify-Key": token
+            }
+        })
+
+        this.baseUrl = baseUrl
+        this.token = token
+
+
+        this.on("open", () => {
+            console.log("WebSocket opened. xxx YYY")
+        })
+
+        this.on("message", (data) => {
+            console.log("Message received: %s", data)
+        })
+
+
+        this.on("close", () => {
+            console.log("WebSocket closed.")
+        })
+
+
+        this.on("error", (error) => {
+            console.error("WebSocket error: %s", error)
+        })
+
+    }
+
+
+}
+
+
+const baseUrl = "wss://gotify.gp-softwaretechnik.at"
+const token = "CkAA8psxiIpB.EM"
+
+// Start
+new GotifyWebSocket(baseUrl, token)
+

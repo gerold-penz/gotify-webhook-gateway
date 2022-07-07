@@ -4,7 +4,7 @@ LABEL maintainer="Gerold Penz Softwaretechnik - <gerold@gp-softwaretechnik.at>"
 # Environment
 WORKDIR "/app"
 ENV NODE_ENV="production"
-ENV NPM_CONFIG_LOGLEVEL="verbose"
+#ENV NPM_CONFIG_LOGLEVEL="verbose"
 
 # Install
 COPY [".", "/app"]
