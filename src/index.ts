@@ -1,8 +1,7 @@
 import {settings} from "./settings.js"
 import {GotifyHttp} from "./gotify-http.js"
-import {GotifyWebSocket} from "./gotify-websocket.js"
-import {Application, Message, WebHook} from "./types.js"
-import {default as axios, AxiosRequestConfig} from "axios"
+import {Application, WebHook} from "./types.js"
+import {WebsocketBuilder, Websocket} from 'websocket-ts'
 
 
 // get webhooks for applications
@@ -22,47 +21,46 @@ async function getAppWebHooks() {
 }
 
 
+async function onOpen(instance: Websocket, event: Event) {
+    console.debug("Websocket onOpen:", event)
+}
+
+
+async function onClose(instance: Websocket, event: Event) {
+    console.debug("Websocket onClose:", event)
+}
+
+
+async function onError(instance: Websocket, event: Event) {
+    console.debug("Websocket onError:", event)
+}
+
+
+async function onMessage(instance: Websocket, event: Event) {
+    console.debug("Websocket onMessage:", event)
+}
+
+
+async function onRetry(instance: Websocket, event: Event) {
+    console.debug("Websocket onRetry:", event)
+}
+
+
 async function main() {
-    // start WebSocket client
     const appWebHooks = await getAppWebHooks()
-    const webSocket = new GotifyWebSocket(settings.wsBaseUrl, settings.clientToken)
 
-
-    // onMessage
-    webSocket.on("message", async (data: string) => {
-
-        const message: Message = JSON.parse(data)
-        // {
-        //   "id":127,
-        //   "appid":5,
-        //   "message":"content",
-        //   "title":"title",
-        //   "priority":0,
-        //   "extras":{"client::display":{"contentType":"text/markdown"}},
-        //   "date":"2022-07-07T20:49:42.667579539+02:00"
-        // }
-
-        console.debug("Message received: %s", message.message)
-
-        // Check if app has a configured webhook
-        if (!appWebHooks.has(message.appid)) {
-            return
-        }
-
-        // Send Webhook async
-        const webHook = appWebHooks.get(message.appid)!
-        const config: AxiosRequestConfig = {headers: {"Content-Type": "application/json"}}
-        if (webHook.basicAuthUsername && webHook.basicAuthPassword) {
-            config.auth = {username: webHook.basicAuthUsername, password: webHook.basicAuthPassword}
-        }
-
-        // Request WebHook
-        try {
-            await axios.post(webHook.url, message, config)
-        } catch (error) {
-            console.error(error)
-        }
-    })
+    const ws = new WebsocketBuilder(`${settings.wsBaseUrl}/stream`)
+        // @ts-ignore
+        .onOpen(onOpen)
+        // @ts-ignore
+        .onClose(onClose)
+        // @ts-ignore
+        .onError(onError)
+        // @ts-ignore
+        .onMessage(onMessage)
+        // @ts-ignore
+        .onRetry(onRetry)
+        .build()
 
 }
 
