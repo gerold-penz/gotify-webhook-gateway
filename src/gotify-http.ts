@@ -7,9 +7,7 @@ import {settings} from "./settings.js"
 export async function getApplications(): Promise<Application[]> {
     const url = `${settings.httpBaseUrl}/application`
     const {data} = await axios.get(url, {
-        headers: {
-            "X-Gotify-Key": settings.clientToken
-        }
+        headers: {"X-Gotify-Key": settings.clientToken}
     })
     return data
 }
