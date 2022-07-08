@@ -1,47 +1,36 @@
 import {default as axios} from "axios"
 import {Application, ApplicationsById, ApplicationsByName} from "./types.js"
+import {settings} from "./settings.js"
 
 
-export class GotifyHttp {
-
-
-    constructor(
-        private httpBaseUrl: string,
-        private clientToken: string,
-    ) {
-    }
-
-
-    // Returns an array with applications.
-    async getApplications(): Promise<Application[]> {
-        const url = `${this.httpBaseUrl}/application`
-        const {data} = await axios.get(url, {
-            headers: {
-                "X-Gotify-Key": this.clientToken
-            }
-        })
-        return data
-    }
-
-
-    // Returns a map with applications. Keys are app names.
-    async getApplicationsByName(): Promise<ApplicationsByName> {
-        const applications: ApplicationsByName = new Map()
-        for (let application of await this.getApplications()) {
-            applications.set(application.name, application)
+// Returns an array with applications.
+export async function getApplications(): Promise<Application[]> {
+    const url = `${settings.httpBaseUrl}/application`
+    const {data} = await axios.get(url, {
+        headers: {
+            "X-Gotify-Key": settings.clientToken
         }
-        return applications
-    }
-
-
-    // Returns a map with applications. Keys are app ids.
-    async getApplicationsById(): Promise<ApplicationsById> {
-        const applications: ApplicationsById = new Map()
-        for (let application of await this.getApplications()) {
-            applications.set(application.id, application)
-        }
-        return applications
-    }
-
-
+    })
+    return data
 }
+
+
+// Returns a map with applications. Keys are app names.
+export async function getApplicationsByName(): Promise<ApplicationsByName> {
+    const applications: ApplicationsByName = new Map()
+    for (let application of await getApplications()) {
+        applications.set(application.name, application)
+    }
+    return applications
+}
+
+
+// Returns a map with applications. Keys are app ids.
+export async function getApplicationsById(): Promise<ApplicationsById> {
+    const applications: ApplicationsById = new Map()
+    for (let application of await getApplications()) {
+        applications.set(application.id, application)
+    }
+    return applications
+}
+

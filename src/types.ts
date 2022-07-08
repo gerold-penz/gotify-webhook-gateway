@@ -22,4 +22,5 @@ export type WebHook = {
     url: string
     basicAuthUsername?: string
     basicAuthPassword?: string
+    deleteMessage?: boolean
 }

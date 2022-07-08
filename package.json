@@ -29,10 +29,11 @@
   "homepage": "https://github.com/gerold-penz/gotify-webhooks#readme",
   "dependencies": {
     "@types/node": "^18.0.3",
+    "@types/ws": "^8.5.3",
     "axios": "^0.27.2",
     "dotenv": "^16.0.1",
     "typescript": "^4.7.4",
-    "websocket-ts": "^1.1.1"
+    "ws": "^8.8.0"
   },
   "devDependencies": {
     "concurrently": "^7.2.2",
