@@ -16,6 +16,8 @@ export type Message = {
     priority: number
     date: string
     extras?: any
+    appName?: string
+    deleteMessage?: boolean
 }
 export type WebHook = {
     appName: string

@@ -33,3 +33,18 @@ export namespace Applications {
     // }
 
 }
+
+
+export namespace Messages {
+
+    // Deletes a message
+    export async function deleteMessage(messageId: number): Promise<void> {
+        if (!messageId) {
+            return
+        }
+        const url = `${settings.httpBaseUrl}/message/${messageId}`
+        await axios.delete(url, {headers: {"X-Gotify-Key": settings.clientToken}})
+    }
+
+}
+

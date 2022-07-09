@@ -1,8 +1,8 @@
 import WebSocket, {RawData} from "ws"
 import {settings} from "./settings.js"
-import {Applications} from "./gotify-http.js"
+import {Applications, Messages} from "./gotify-http.js"
 import {ClientRequest, IncomingMessage} from "http"
-import {WebHook} from "./types.js"
+import {Message, WebHook} from "./types.js"
 import {default as axios, AxiosRequestConfig, AxiosError, AxiosResponse} from "axios"
 
 
@@ -78,7 +78,7 @@ export namespace GotifyWebSocket {
 
         // WebSocket-Event: message
         ws.on("message", (rawData: RawData) => {
-            const message = JSON.parse(rawData.toString())
+            const message: Message = JSON.parse(rawData.toString())
             // Example message: {
             //   "id":127, "appid":5, "message":"content", "title":"title", "priority":0,
             //   "extras":{"client::display":{"contentType":"text/markdown"}},
@@ -90,16 +90,32 @@ export namespace GotifyWebSocket {
             // Iterate defined WebHooks
             for (let webHook of appWebHooks.get(message.appid) || []) {
 
+                // Copy message and enrich with additional informations
+                const messageToSend: Message = {...message}
+                messageToSend.appName = webHook.appName
+                messageToSend.deleteMessage = webHook.deleteMessage
+
                 // Send Webhook async
                 const config: AxiosRequestConfig = {headers: {"Content-Type": "application/json"}}
                 if (webHook.basicAuthUsername && webHook.basicAuthPassword) {
                     config.auth = {username: webHook.basicAuthUsername, password: webHook.basicAuthPassword}
                 }
                 // Request WebHook (async)
-                axios.post(webHook.url, message, config)
+                axios.post(webHook.url, messageToSend, config)
+                    // Successful request
                     .then((response: AxiosResponse) => {
                         console.debug("WebHook sent: ", response.statusText)
                     })
+                    // Delete the message
+                    .then(() => {
+                        if (webHook.deleteMessage) {
+                            return Messages.deleteMessage(messageToSend.id)
+                                .then(() => {
+                                    console.debug(`Gotify message #${messageToSend.id} deleted.`)
+                                })
+                        }
+                    })
+                    // Error handler
                     .catch((err: AxiosError) => {
                         console.error("WebHook error:", err.message, err.code, err.config.url)
                     })
