@@ -25,8 +25,7 @@ class Settings {
 
 
     constructor(
-        private readonly gotifyHostname = (env["GOTIFY_HOSTNAME"] as string).toLowerCase(),
-        private gotifyHttps = (env["GOTIFY_HTTPS"] as string).toLowerCase(),
+        private readonly gotifyUrl = (env["GOTIFY_URL"] as string).toLowerCase(),
         public readonly clientToken = env["GOTIFY_CLIENT_TOKEN"] as string,
         private readonly app1Name = env["APP_1_NAME"] as string,
         private readonly app1WebhookUrl = env["APP_1_WEBHOOK_URL"] as string,
@@ -59,16 +58,23 @@ class Settings {
         private readonly app6BasicAuthPassword = env["APP_6_BASIC_AUTH_PASSWORD"] as string,
         private readonly app6DeleteMessage = env["APP_6_DELETE_MESSAGE"] as string,
     ) {
+        // Check schema
+        if (!this.gotifyUrl.startsWith("http")) {
+            throw new Error("Gotify URL must start with 'http' or 'https'")
+        }
         // remove slash
-        if (this.gotifyHostname.endsWith("/")) {
-            this.gotifyHostname = gotifyHostname.slice(0, -1)
+        if (this.gotifyUrl.endsWith("/")) {
+            this.gotifyUrl = gotifyUrl.slice(0, -1)
         }
         // use secure URL?
-        const https = strToBool(this.gotifyHttps)
+        const secure = this.gotifyUrl.startsWith("https")
 
         // URL for HTTP requests
-        this.httpBaseUrl = `${https ? "https" : "http"}://${this.gotifyHostname}`
-        this.wsBaseUrl = `${https ? "wss" : "ws"}://${this.gotifyHostname}`
+        this.httpBaseUrl = this.gotifyUrl
+        const urlWithoutSchema = this.gotifyUrl
+            .replace("https://", "")
+            .replace("http://", "")
+        this.wsBaseUrl = `${secure ? "wss" : "ws"}://${urlWithoutSchema}`
 
         // Webhooks ermitteln
         for (const [appName, url, basicAuthUsername, basicAuthPassword, deleteMessage] of [

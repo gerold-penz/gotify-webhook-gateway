@@ -1,5 +1,5 @@
 import {default as axios} from "axios"
-import {Application, ApplicationsById, ApplicationsByName} from "./types.js"
+import {Application} from "./types.js"
 import {settings} from "./settings.js"
 
 

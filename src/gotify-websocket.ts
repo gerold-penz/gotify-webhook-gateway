@@ -44,7 +44,7 @@ export namespace GotifyWebSocket {
                 const webHookInfos = webHooks.map((webHook) => {
                     return {appName: webHook.appName, url: webHook.url, deleteMessage: webHook.deleteMessage}
                 })
-                console.debug("WebHooks for App-ID", appid + ":", webHookInfos)
+                console.debug("WebHooks for Gotify App-ID", appid + ":", webHookInfos)
             })
 
         })
