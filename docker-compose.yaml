@@ -1,8 +1,8 @@
 services:
 
-  gotify-webhooks:
+  gotify-webhook-gateway:
 
-    image: geroldpenz/gotify-webhooks
+    image: geroldpenz/gotify-webhook-gateway
 
     build:
       context: .

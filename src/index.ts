@@ -2,7 +2,8 @@ import {GotifyWebSocket} from "./gotify-websocket.js"
 
 
 async function main() {
-    new GotifyWebSocket()
+    console.debug("Gotify-WebHook-Gateway is starting...")
+    GotifyWebSocket.wsConnect()
 }
 
 

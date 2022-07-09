@@ -1,19 +1,19 @@
 {
-  "name": "gotify-webhooks",
+  "name": "gotify-webhook-gateway",
   "type": "module",
-  "version": "1.2.2",
+  "version": "1.4.1",
   "description": "Sends HTTP requests when Gotify server receives messages.",
   "main": "dist/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "watch": "npx tsc --watch",
     "build": "npx tsc",
-    "dev": "concurrently -k \"npm run watch\"  \"npx nodemon\"",
+    "dev": "concurrently -k \"npm run watch\"  \"npx nodemon --trace-warnings\"",
     "start": "node ./dist/index.js"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/gerold-penz/gotify-webhooks.git"
+    "url": "git+https://github.com/gerold-penz/gotify-webhook-gateway.git"
   },
   "keywords": [
     "gotify",
@@ -24,9 +24,9 @@
   "author": "Gerold Penz Softwaretechnik - <gerold@gp-softwaretechnik.at>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/gerold-penz/gotify-webhooks/issues"
+    "url": "https://github.com/gerold-penz/gotify-webhook-gateway/issues"
   },
-  "homepage": "https://github.com/gerold-penz/gotify-webhooks#readme",
+  "homepage": "https://github.com/gerold-penz/gotify-webhook-gateway#readme",
   "dependencies": {
     "@types/node": "^18.0.3",
     "@types/ws": "^8.5.3",

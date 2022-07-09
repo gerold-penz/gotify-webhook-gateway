@@ -1,118 +1,112 @@
 import WebSocket, {RawData} from "ws"
 import {settings} from "./settings.js"
-import {getApplicationsByName} from "./gotify-http.js"
+import {Applications} from "./gotify-http.js"
 import {ClientRequest, IncomingMessage} from "http"
+import {WebHook} from "./types.js"
+import {default as axios, AxiosRequestConfig, AxiosError, AxiosResponse} from "axios"
 
 
-export class GotifyWebSocket {
+export namespace GotifyWebSocket {
 
-    private ws!: WebSocket
-
-    constructor() {
-        this.wsConnect()
-    }
+    let ws: WebSocket
+    let appWebHooks: Map<number, WebHook[]>  // number = application.id
 
 
-    wsConnect() {
+    export function wsConnect() {
+
         // Verbinden
-        console.log("Websocket connecting...")
-        this.ws = new WebSocket(`${settings.wsBaseUrl}/stream`, {
+        console.debug("Websocket connecting...")
+        ws = new WebSocket(`${settings.wsBaseUrl}/stream`, {
             headers: {"X-Gotify-Key": settings.clientToken},
         })
 
-        // WebSocket-Events
-        this.ws.on("open", this.onOpen)
-        this.ws.on("error", this.onError)
-        this.ws.on("unexpected-response", this.onUnexpectedResponse)
-        this.ws.on("close", this.onClose)
-        this.ws.on("message", this.onMessage)
-    }
+
+        // WebSocket-Event: open
+        ws.on("open", async () => {
+            console.debug("Websocket opened.")
+
+            // Determine WebHooks for application-IDs
+            appWebHooks = new Map<number, WebHook[]>()  // number = application.id
+            console.debug("Determine WebHooks for Gotify applications:")
+            const applications = await Applications.getAllApplications()
+            for (let application of applications) {
+                for (let webHook of settings.webHooks.filter((webHook) => webHook.appName && webHook.url)) {
+                    if (webHook.appName === application.name || webHook.appName === "*") {
+                        const webHookList = appWebHooks.get(application.id) || []
+                        webHookList.push(webHook)
+                        appWebHooks.set(application.id, webHookList)
+                    }
+                }
+            }
+
+            // Show WebHooks for applications
+            appWebHooks.forEach((webHooks, appid) => {
+                const webHookInfos = webHooks.map((webHook) => {
+                    return {appName: webHook.appName, url: webHook.url, deleteMessage: webHook.deleteMessage}
+                })
+                console.debug("WebHooks for App-ID", appid + ":", webHookInfos)
+            })
+
+        })
 
 
-    private async onOpen() {
-        console.debug("Websocket opened.")
-        const applicationsByName = await getApplicationsByName()
-
-        // // get webhooks for applications
-        // async function getAppWebHooks() {
-        //     const gotifyHttp = new GotifyHttp(settings.httpBaseUrl, settings.clientToken)
-        //     const applicationsByName = await gotifyHttp.getApplicationsByName()
-        //     const appWebHooks = new Map<number, WebHook>()
-        //
-        //     for (const webHook of settings.webHooks) {
-        //         if (webHook.appName === "*") {
-        //             appWebHooks.set(0, webHook)
-        //         } else {
-        //             if (!applicationsByName.has(webHook.appName)) {
-        //                 throw new Error(`App name '${webHook.appName}' not found.`)
-        //             }
-        //             const application = applicationsByName.get(webHook.appName) as Application
-        //             appWebHooks.set(application.id, webHook)
-        //         }
-        //     }
-        //     return appWebHooks
-        // }
-
-    }
+        // WebSocket-Event: error
+        ws.on("error", (err: Error) => {
+            console.error("Websocket error:", err)
+        })
 
 
-    private onError(err: Error) {
-        console.error("Websocket error:", err)
-    }
+        // WebSocket-Event: open
+        ws.on("unexpected-response", (request: ClientRequest, response: IncomingMessage) => {
+            console.debug("Websocket unexpected response:", response?.statusMessage)
+            if (ws?.readyState !== ws?.OPEN) {
+                // Verbindung neu aufbauen
+                setTimeout(wsConnect, 5000)
+            }
+        })
 
 
-    private onUnexpectedResponse(request: ClientRequest, response: IncomingMessage) {
-        console.debug("Websocket unexpected response:", response?.statusMessage)
-        if (this.ws.readyState !== this.ws.OPEN) {
-            // Verbindung neu aufbauen
-            setTimeout(this.wsConnect, 5000)
-        }
-    }
+        // WebSocket-Event: close
+        ws.on("close", (code: number, reason: Buffer) => {
+            console.debug("Websocket closed.", code)
+            if (ws?.readyState !== ws?.OPEN) {
+                // Verbindung neu aufbauen
+                setTimeout(wsConnect, 5000)
+            }
+        })
 
 
-    private onClose(code: number, reason: Buffer) {
-        console.debug("Websocket closed.", code)
-        if (this.ws.readyState !== this.ws.OPEN) {
-            // Verbindung neu aufbauen
-            setTimeout(this.wsConnect, 5000)
-        }
-    }
+        // WebSocket-Event: message
+        ws.on("message", (rawData: RawData) => {
+            const message = JSON.parse(rawData.toString())
+            // Example message: {
+            //   "id":127, "appid":5, "message":"content", "title":"title", "priority":0,
+            //   "extras":{"client::display":{"contentType":"text/markdown"}},
+            //   "date":"2022-07-07T20:49:42.667579539+02:00"
+            // }
 
+            console.debug("Websocket message received:", message)
 
-    private async onMessage(data: RawData, isBinary: boolean) {
-        console.debug("Websocket message received:", data.toString(), typeof data)
-        // {
-        //   "id":127,
-        //   "appid":5,
-        //   "message":"content",
-        //   "title":"title",
-        //   "priority":0,
-        //   "extras":{"client::display":{"contentType":"text/markdown"}},
-        //   "date":"2022-07-07T20:49:42.667579539+02:00"
-        // }
-        //
-        // // Check if app has a configured webhook
-        // if (!appWebHooks.has(message.appid)) {
-        //     return
-        // }
-        //
-        // // Send Webhook async
-        // const webHook = appWebHooks.get(message.appid)!
-        // const config: AxiosRequestConfig = {headers: {"Content-Type": "application/json"}}
-        // if (webHook.basicAuthUsername && webHook.basicAuthPassword) {
-        //     config.auth = {username: webHook.basicAuthUsername, password: webHook.basicAuthPassword}
-        // }
-        //
-        // // Request WebHook
-        // try {
-        //     await axios.post(webHook.url, message, config)
-        // } catch (error) {
-        //     console.error(error)
-        // }
+            // Iterate defined WebHooks
+            for (let webHook of appWebHooks.get(message.appid) || []) {
 
+                // Send Webhook async
+                const config: AxiosRequestConfig = {headers: {"Content-Type": "application/json"}}
+                if (webHook.basicAuthUsername && webHook.basicAuthPassword) {
+                    config.auth = {username: webHook.basicAuthUsername, password: webHook.basicAuthPassword}
+                }
+                // Request WebHook (async)
+                axios.post(webHook.url, message, config)
+                    .then((response: AxiosResponse) => {
+                        console.debug("WebHook sent: ", response.statusText)
+                    })
+                    .catch((err: AxiosError) => {
+                        console.error("WebHook error:", err.message, err.code, err.config.url)
+                    })
+
+            }
+
+        })
     }
 
 }
-
-
-

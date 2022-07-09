@@ -4,6 +4,9 @@ import {WebHook} from "./types.js"
 
 
 function strToBool(text: string): boolean {
+    if (!text) {
+        return false
+    }
     text = text.toLowerCase()
     return (
         text === "true" ||
