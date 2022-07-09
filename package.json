@@ -4,10 +4,16 @@
   "version": "1.2.2",
   "description": "Sends HTTP requests when Gotify server receives messages.",
   "main": "dist/index.js",
+  "source": "src/index.ts",
+  "engines": {
+    "node": ">=14",
+    "outputFormat": "esmodule"
+  },
+  "types": "dist/types.d.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "watch": "npx tsc --watch",
-    "build": "npx tsc",
+    "watch": "npx parcel watch",
+    "build": "npx parcel build",
     "dev": "concurrently -k \"npm run watch\"  \"npx nodemon\"",
     "start": "node ./dist/index.js"
   },
@@ -36,8 +42,11 @@
     "ws": "^8.8.0"
   },
   "devDependencies": {
+    "@parcel/packager-ts": "^2.6.2",
+    "@parcel/transformer-typescript-types": "^2.6.2",
     "concurrently": "^7.2.2",
-    "nodemon": "^2.0.19"
+    "nodemon": "^2.0.19",
+    "parcel": "^2.6.2"
   },
   "optionalDependencies": {
     "bufferutil": "^4.0.6",

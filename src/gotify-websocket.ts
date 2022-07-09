@@ -1,6 +1,6 @@
 import WebSocket, {RawData} from "ws"
-import {settings} from "./settings.js"
-import {getApplicationsByName} from "./gotify-http.js"
+import {settings} from "./settings"
+import {Applications} from "./gotify-http"
 import {ClientRequest, IncomingMessage} from "http"
 
 
@@ -31,7 +31,7 @@ export class GotifyWebSocket {
 
     private async onOpen() {
         console.debug("Websocket opened.")
-        const applicationsByName = await getApplicationsByName()
+        const applicationsByName = await Applications.getAllByName()
 
         // // get webhooks for applications
         // async function getAppWebHooks() {
