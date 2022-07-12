@@ -31,7 +31,9 @@ export namespace GotifyWebSocket {
             const applications = await Applications.getAllApplications()
             for (let application of applications) {
                 for (let webHook of settings.webHooks.filter((webHook) => webHook.appName && webHook.url)) {
+                    webHook = {...webHook}
                     if (webHook.appName === application.name || webHook.appName === "*") {
+                        webHook.appRealName = application.name
                         const webHookList = appWebHooks.get(application.id) || []
                         webHookList.push(webHook)
                         appWebHooks.set(application.id, webHookList)
